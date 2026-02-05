@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Convite</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f9; display: flex; justify-content: center; }
+        .card { background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { color: #25d366; text-align: center; }
+        select, button { width: 100%; padding: 10px; margin-top: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
+        button { background: #25d366; color: white; border: none; font-weight: bold; cursor: pointer; display: none; }
+        button:hover { background: #128c7e; }
+        label { font-weight: bold; display: block; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Convite Rápido</h2>
+
+    <label>1. Escolha a Turma:</label>
+    <select id="turma" onchange="carregarAlunos()">
+        <option value="">Selecione...</option>
+        <option value="A">Turma A</option>
+        <option value="B">Turma B</option>
+    </select>
+
+    <div id="area-aluno" style="display:none;">
+        <label>2. Escolha o Aluno:</label>
+        <select id="aluno" onchange="mostrarBotao()">
+            <option value="">Selecione o aluno...</option>
+        </select>
+    </div>
+
+    <button id="btnWhatsapp" onclick="enviarMensagem()">Gerar Convite no WhatsApp</button>
+</div>
+
+<script>
+    // Aqui você cadastra suas turmas e alunos
+    const dados = {
+        "A": ["Ana Silva", "Bruno Costa", "Carlos Souza"],
+        "B": ["Deborah Lima", "Eduardo Mendes", "Fernanda Rocha"]
+    };
+
+    function carregarAlunos() {
+        const turmaSel = document.getElementById("turma").value;
+        const alunoSelect = document.getElementById("aluno");
+        const areaAluno = document.getElementById("area-aluno");
+        const btn = document.getElementById("btnWhatsapp");
+
+        alunoSelect.innerHTML = '<option value="">Selecione o aluno...</option>';
+        btn.style.display = "none";
+
+        if (turmaSel !== "") {
+            dados[turmaSel].forEach(aluno => {
+                let opt = document.createElement("option");
+                opt.value = aluno;
+                opt.innerHTML = aluno;
+                alunoSelect.appendChild(opt);
+            });
+            areaAluno.style.display = "block";
+        } else {
+            areaAluno.style.display = "none";
+        }
+    }
+
+    function mostrarBotao() {
+        const alunoSel = document.getElementById("aluno").value;
+        const btn = document.getElementById("btnWhatsapp");
+        btn.style.display = alunoSel !== "" ? "block" : "none";
+    }
+
+    function enviarMensagem() {
+        const aluno = document.getElementById("aluno").value;
+        const turma = document.getElementById("turma").value;
+        
+        // Mensagem personalizada
+        const texto = `Olá! Este é um convite para o aluno(a) *${aluno}* da *Turma ${turma}*.`;
+        const encode = encodeURIComponent(texto);
+        
+        // Abre o WhatsApp (sem número fixo, o usuário escolhe para quem enviar)
+        window.open(`https://wa.me/?text=${encode}`, '_blank');
+    }
+</script>
+
+</body>
+</html>
